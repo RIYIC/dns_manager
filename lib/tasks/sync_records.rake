@@ -5,25 +5,25 @@ ENV_FILENAME = '/home/env'
 desc "Syncronize database domain records with provider account" 
 task :sync_records => :environment do
     
-    provider = ARGV[1] || 'digitalocean'
+    provider = ENV["provider"] || 'digitalocean'
 
     credentials = YAML.load(File.read(ENV_FILENAME)) if File.exists?(ENV_FILENAME)
 
     raise "Credential not found" unless credentials.has_key?(provider)
 
-    client = DropletKit::Client.new(access_token: credentials[provider], per_page: 1000)
+    client = DropletKit::Client.new(access_token: credentials[provider])
 
     domains_in_provider = []
 
-    client.domains.each do |d|
-        domains_in_provider.push(d)
+    client.domains.all.each do |d|
+        domains_in_provider.push(d.name) unless domains_in_provider.include?(d.name)
     end
 
-    puts "Domains in provider: " + domains_in_provider.map{|d| d.name}.size.to_s
+    puts "Domains in provider: " + domains_in_provider.inspect
 
     Domain.all.each do |d|
 
-        unless domains_in_provider.any?{|dp| dp.name == d.name}
+        unless domains_in_provider.include?(d.name)
 
             puts "creando #{d.name}"
 
@@ -74,13 +74,21 @@ def create_records(client, domain)
             type: record.zone_type,
             name: record.name,
             data: record.data,
+            priority: record.priority,
+            port: record.port,
+            weight: record.weight
         )
-
-        provider_record.priority = 10 if(record.zone_type == 'MX')
 
         response = client.domain_records.create(provider_record, for_domain: domain.name)
 
-        check_response(response)
+        dkrecord = check_response(response)
+
+        record.provider_ref = dkrecord.id
+
+        record.save!
+
+        dkrecord
+
         
     end
 end

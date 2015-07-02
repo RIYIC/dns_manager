@@ -1,6 +1,6 @@
 require 'yaml'
 
-ENV_FILENAME = '/home/env'
+env_filename = '/home/env'
 
 desc "Drop domain from provider" 
 task :drop_domain => :environment do
@@ -8,11 +8,11 @@ task :drop_domain => :environment do
     
     dominio_borrar = ARGV[1]
     
-    raise "Falta o dominio a borrar" if(dominio_borrar.empty?)
+    raise "Falta o dominio a borrar" if(dominio_borrar.nil?)
 
-    credentials = YAML.load(File.read(ENV_FILENAME)) if File.exists?(ENV_FILENAME)
+    credentials = YAML.load(File.read(env_filename)) if ::File.exists?(env_filename)
 
-    raise "Credential not found" unless credentials.has_key?(provider)
+    raise "credential not found" unless credentials.has_key?(provider)
 
     client = DropletKit::Client.new(access_token: credentials[provider])
 
