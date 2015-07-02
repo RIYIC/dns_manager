@@ -11,12 +11,12 @@ class Record < ActiveRecord::Base
         inclusion: {
             in:  %w(
                 A 
+                AAAA
                 CNAME  
                 MX
                 NS 
-                TXT 
+                TXT
                 SRV
-                PTR
             ),
             message: "'%{value}' is not a valid zone_type"
         }
