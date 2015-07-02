@@ -27,7 +27,9 @@ ActiveRecord::Schema.define(version: 20150630000150) do
     t.string   "name",                                 null: false
     t.string   "zone_type",                            null: false
     t.string   "data"
-    t.string   "extra"
+    t.integer  "priority"
+    t.integer  "port"
+    t.integer  "weight"
     t.string   "active",                 default: "Y"
     t.datetime "modification_timestamp"
     t.datetime "created_at",                           null: false

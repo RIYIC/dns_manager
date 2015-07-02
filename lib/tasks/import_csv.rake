@@ -28,6 +28,7 @@ task :import_csv => :environment do
     csv.each do |row|
         (domain, name, type, data, extra, ttl, active, modification_timestamp, serial) = row
 
+        puts "Antes: #{domain}, #{name}, #{type}, #{extra}, #{active}"
         # quitamos o punto final no dominio
         # senon no o acepta o proveedor
         domain.gsub!(/\.$/, '')
@@ -36,9 +37,14 @@ task :import_csv => :environment do
         name.gsub!(/\.#{domain}\.?$/, '')
         name = '@' if name == domain
 
+        # correximos extra
+        extra = fix_extra(extra, type)
 
-        extra = nil if extra == '0'
-        puts "#{domain}, #{name}, #{type}, #{extra}, #{active}"
+        # correximos erros leves no data
+        data = fix_data(data, type)
+
+
+        puts "Despues:#{domain}, #{name}, #{type}, #{extra}, #{active}"
 
         d = Domain.find_by_name(domain)
 
@@ -50,17 +56,16 @@ task :import_csv => :environment do
         z = Record.find_by(domain_id: d.id, name: name, zone_type: type, data: data)
 
         if(z.nil?)
-            puts "creando zona #{name} tipo: #{type}"
             z = d.records.new(
                 name: name,
                 zone_type: type,
                 data: data,
-                extra: extra,
+                priority: extra,
                 active: active,
                 modification_timestamp: modification_timestamp
             )
         else
-            z.extra = extra
+            z.priority = extra
             z.active = active
             z.modification_timestamp = modification_timestamp
         end
@@ -68,5 +73,28 @@ task :import_csv => :environment do
         z.save!
         
     end
+
+end
+
+
+def fix_data(data, type)
+
+    if type == 'CNAME' || type == 'MX'
+
+        data += '.' unless data =~ /\.$/
+    end
+
+    data
+
+end
+
+
+def fix_extra(extra, type)
+
+    return nil if (extra =~ /^0$/ && type != 'MX')
+    
+    return "10" if (extra == nil && type == 'MX')
+
+    extra
 
 end

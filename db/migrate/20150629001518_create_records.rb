@@ -5,8 +5,11 @@ class CreateRecords < ActiveRecord::Migration
         t.string :name, null: false
         t.string :zone_type, null: false
         t.string :data
-        t.string :extra, null: true, default: nil
+        t.integer :priority, null: true, default: nil
+        t.integer :port, null:true, default: nil # SRV port
+        t.integer :weight, null:true, default: nil # SRV weight
         t.string :active, default: 'Y'
+        t.string :provider_ref
         t.datetime :modification_timestamp
 
 
