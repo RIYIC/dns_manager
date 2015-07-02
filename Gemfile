@@ -1,13 +1,13 @@
 source 'https://rubygems.org'
 
 
-gem 'rails', '4.2.3'
+gem 'rails', '~> 4.2.3'
 
 gem 'rails-api'
 
 gem 'spring', :group => :development
 
-gem 'droplet_kit'
+gem 'droplet_kit', :git => 'https://github.com/alambike/droplet_kit.git', :branch=> 'other_resources_pagination'
 
 gem 'sqlite3'
 

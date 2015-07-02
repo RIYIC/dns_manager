@@ -1,3 +1,15 @@
+GIT
+  remote: https://github.com/alambike/droplet_kit.git
+  revision: f120cf200eb8d4a05f1c37216d3a687ddc7e204f
+  branch: other_resources_pagination
+  specs:
+    droplet_kit (1.2.2)
+      activesupport (> 3.0, < 5.0.0)
+      faraday (~> 0.9.1)
+      kartograph (~> 0.2.1)
+      resource_kit (~> 0.1.1)
+      virtus (~> 1.0.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -47,12 +59,6 @@ GEM
       descendants_tracker (~> 0.0.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
-    droplet_kit (1.2.2)
-      activesupport (> 3.0, < 5.0.0)
-      faraday (~> 0.9.1)
-      kartograph (~> 0.2.1)
-      resource_kit (~> 0.1.1)
-      virtus (~> 1.0.3)
     equalizer (0.0.11)
     erubis (2.7.0)
     faraday (0.9.1)
@@ -128,8 +134,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  droplet_kit
-  rails (= 4.2.3)
+  droplet_kit!
+  rails (~> 4.2.3)
   rails-api
   spring
   sqlite3
