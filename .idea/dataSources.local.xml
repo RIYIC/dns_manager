@@ -2,5 +2,8 @@
 <project version="4">
   <component name="dataSourceStorageLocal">
     <data-source name="Rails dns-manager: development" uuid="900ce7a3-cc34-4a12-8824-804fba96985b" />
+    <data-source name="SQLite -" uuid="039f1a47-e1d0-44c3-b392-c076cd8db211">
+      <secret-storage>master_key</secret-storage>
+    </data-source>
   </component>
 </project>
