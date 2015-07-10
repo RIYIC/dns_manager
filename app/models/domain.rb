@@ -3,6 +3,8 @@ class Domain < ActiveRecord::Base
 
     belongs_to :user
 
+    belongs_to :provider
+
     validates :name, presence: true, uniqueness: true
 
     validates :user_id, presence: true
