@@ -11,16 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150630000150) do
+ActiveRecord::Schema.define(version: 20150709001207) do
 
   create_table "domains", force: :cascade do |t|
-    t.string   "name",                     null: false
-    t.string   "active",     default: "Y"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.string   "name",                      null: false
+    t.string   "active",      default: "Y"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.integer  "user_id"
+    t.integer  "provider_id"
   end
 
   add_index "domains", ["name"], name: "index_domains_on_name", unique: true
+
+  create_table "providers", force: :cascade do |t|
+    t.string "name",                           null: false
+    t.string "slug",                           null: false
+    t.text   "characteristics", default: "{}"
+  end
+
+  add_index "providers", ["slug"], name: "index_providers_on_slug", unique: true
 
   create_table "records", force: :cascade do |t|
     t.integer  "domain_id"
@@ -35,5 +45,13 @@ ActiveRecord::Schema.define(version: 20150630000150) do
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
   end
+
+  create_table "users", force: :cascade do |t|
+    t.string   "uid"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "users", ["uid"], name: "index_users_on_uid"
 
 end
