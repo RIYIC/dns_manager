@@ -4,13 +4,7 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {
-  name: 'one.com'
+digital_ocean: {
+  name: 'Digital Ocean',
+  slug: 'digital_ocean',
 }
-# column: value
-#
-two: {
-
-  name: 'two.io'
-}
-#  column: value

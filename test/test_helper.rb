@@ -6,5 +6,11 @@ class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
-  # Add more helper methods to be used by all tests here...
+
+  # @return [String]
+  def self.generate_random_string(len=8)
+    (0..len).map {(65 + rand(26)).chr}.join.downcase
+  end
+
+
 end

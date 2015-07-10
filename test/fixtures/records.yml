@@ -4,8 +4,20 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
+one: {
+  name: one,
+  zone_type: A,
+  data: '102.12.13.14'
+
+}
 # column: value
 #
-two: {}
+two: {
+
+  name: two,
+  zone_type: A,
+  data: '102.12.13.14'
+
+
+}
 #  column: value
