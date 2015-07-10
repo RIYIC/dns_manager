@@ -1,29 +1,36 @@
+require 'driver'
 class CreateDomain < ActiveJob::Base
-    DNS_SERVERS = [%W{
-        ns1.riyic.com
-        ns2.riyic.com
-        ns3.riyic.com
-    }]
+
+    DNS_SERVERS = %W{
+        ns1.riyic.com.
+        ns2.riyic.com.
+        ns3.riyic.com.
+    }
 
     queue_as :altas
     
-    def perform(*args)
-        
-        driver = Driver.new(provider: Rails.configuration.x.provider)
+    def perform(args={})
+
+        provider = args[:provider] || Rails.configuration.x.default_provider
+
+        driver = Driver.get(provider: provider)
 
         args[:dns_servers] = DNS_SERVERS
 
-        driver.create_domain_with_dns(args)
+        domain = driver.create_domain_with_dns(args)
 
-        d = Domain.new(name: args[:name]).save!
+
+        d = Provider.find_by_slug(provider).
+                domains.create!(name: args[:name], user_id: args[:user_id])
+
 
         DNS_SERVERS.each do |dns|
 
-            d.records.new(
+            d.records.create!(
                          name: '@',
                          zone_type: 'NS',
                          data: dns
-            ).save!
+            )
 
         end
 
