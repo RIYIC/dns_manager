@@ -12,7 +12,7 @@ module Driver
 
         credentials = YAML.load(File.read(ENV_FILENAME)) if File.exists?(ENV_FILENAME)
 
-        raise 'Credential not found' unless credentials.has_key?(provider)
+        raise 'Credentials not found' unless credentials && credentials.has_key?(provider)
 
         Object.const_get("Driver::#{provider.camelize}").
             new(credentials[provider])
