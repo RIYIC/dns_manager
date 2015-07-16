@@ -7,7 +7,7 @@ class CreateZoneRecord < ActiveJob::Base
 
         driver = Driver.get(provider: provider)
 
-        domain = Domain.find_by_name(args[:domain])
+        domain = Domain.find_by_name!(args[:domain])
 
         provider_ref = driver.create_record(args)
 

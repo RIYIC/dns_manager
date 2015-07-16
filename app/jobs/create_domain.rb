@@ -19,8 +19,7 @@ class CreateDomain < ActiveJob::Base
 
         domain = driver.create_domain_with_dns(args)
 
-
-        d = Provider.find_by_slug(provider).
+        d = Provider.find_by_slug!(provider).
                 domains.create!(name: args[:name], user_id: args[:user_id])
 
 
