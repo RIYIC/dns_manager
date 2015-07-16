@@ -38,6 +38,8 @@ module Driver
                 zone_type: 'A'
             )
 
+            return d
+
         end
 
 
@@ -63,6 +65,7 @@ module Driver
 
             end
 
+            return d
 
         end
 
