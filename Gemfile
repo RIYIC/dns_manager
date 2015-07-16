@@ -7,9 +7,14 @@ gem 'rails-api'
 
 gem 'spring', :group => :development
 
-gem 'droplet_kit', :git => 'https://github.com/alambike/droplet_kit.git', :branch=> 'other_resources_pagination'
+#gem 'droplet_kit', :git => 'https://github.com/alambike/droplet_kit.git', :branch=> 'other_resources_pagination'
+gem 'droplet_kit'
 
 gem 'sqlite3'
+
+group :test do
+    gem 'webmock'
+end
 
 
 
