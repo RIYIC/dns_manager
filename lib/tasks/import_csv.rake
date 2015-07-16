@@ -5,12 +5,18 @@ require 'csv'
 # INTO OUTFILE '/tmp/result.csv' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' ESCAPED BY '\\' LINES TERMINATED BY '\n' 
 # FROM dns_rr as rr, dns_soa as soa WHERE soa.id = rr.zone
 #
-desc "Import dns records from csv." 
+desc 'Import dns records from csv.'
 task :import_csv => :environment do
-    file = ARGV[1] or raise "A csv filepath must be specified"
+    file = ARGV[1] or raise 'A csv filepath must be specified'
     unless File.exists?(file)
         raise "File #{file} not found"
     end
+
+    username = ARGV[2] or raise 'Needs a username or user uuid to import the records'
+
+    user = User.find_by_uuid(username) || User.find_by_name(username)
+
+    raise "User #{username} not found" unless user
 
     csv_text = File.read(file)
     csv = CSV.parse(csv_text, headers:false)
@@ -48,29 +54,66 @@ task :import_csv => :environment do
 
         d = Domain.find_by_name(domain)
 
-        if(d.nil?)
-            d = Domain.new(name: domain)
-            d.save!
+        if d.nil?
+            begin
+                CreateDomain.perform_now(name: domain, user_id: user.id)
+            rescue Exception => e
+                puts "Error creando domain #{domain}: #{e}"
+
+            end
         end
+
+        # recargamos o dominio
+        d = Domain.find_by_name(domain)
 
         z = Record.find_by(domain_id: d.id, name: name, zone_type: type, data: data)
 
-        if(z.nil?)
-            z = d.records.new(
-                name: name,
-                zone_type: type,
-                data: data,
-                priority: extra,
-                active: active,
-                modification_timestamp: modification_timestamp
-            )
+        if z.nil?
+            begin
+
+                CreateZoneRecord.perform_now(
+                    domain: domain,
+                    name: name,
+                    zone_type: type,
+                    data: data,
+                    priority: extra,
+                    active:active,
+                    modification_timestamp: modification_timestamp
+                )
+            rescue Exception => e
+                puts "Error creando zona #{name} en dominio #{dominio} con data #{data}. #{e}"
+            end
         else
             z.priority = extra
             z.active = active
             z.modification_timestamp = modification_timestamp
+
+            z.save!
         end
 
-        z.save!
+        # if(d.nil?)
+        #     d = Domain.new(name: domain)
+        #     d.save!
+        # end
+        #
+        # z = Record.find_by(domain_id: d.id, name: name, zone_type: type, data: data)
+        #
+        # if(z.nil?)
+        #     z = d.records.new(
+        #         name: name,
+        #         zone_type: type,
+        #         data: data,
+        #         priority: extra,
+        #         active: active,
+        #         modification_timestamp: modification_timestamp
+        #     )
+        # else
+        #     z.priority = extra
+        #     z.active = active
+        #     z.modification_timestamp = modification_timestamp
+        # end
+        #
+        # z.save!
         
     end
 
