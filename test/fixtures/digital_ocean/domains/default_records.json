@@ -1,0 +1,16 @@
+{
+  "domain_records": [
+    {
+    "id": 15,
+    "type": "A",
+    "name": "@",
+    "data": "95.85.33.24",
+    "priority": null,
+    "port": null,
+    "weight": null
+    }
+  ],
+  "meta": {
+    "total": 2
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "domain_record": {
+    "id": 15,
+    "type": "A",
+    "name": "test",
+    "data": "127.0.0.1",
+    "priority": null,
+    "port": null,
+    "weight": null
+  }
+}
