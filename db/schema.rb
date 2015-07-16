@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150709001207) do
+ActiveRecord::Schema.define(version: 20150716020559) do
 
   create_table "domains", force: :cascade do |t|
     t.string   "name",                      null: false
@@ -47,11 +47,12 @@ ActiveRecord::Schema.define(version: 20150709001207) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "uid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "uuid"
+    t.string   "name"
   end
 
-  add_index "users", ["uid"], name: "index_users_on_uid"
+  add_index "users", ["uuid"], name: "index_users_on_uuid"
 
 end
