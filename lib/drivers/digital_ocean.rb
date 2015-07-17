@@ -173,18 +173,32 @@ module Driver
                 :domain,
                 :provider_ref,
 
-                :data,
-                :name
             )
+
+            unless (args.include?(:data) ||
+                args.include?(:priority) ||
+                args.include?(:port) ||
+                args.include?(:weight))
+
+
+                raise 'Falta algun dato que actualizar'
+
+            end
 
             record = get_record(args)
 
-            record.name = args[:name] if args.include?(:name)
+            raise 'record not found' unless record
+
             record.data = args[:data] if args.include?(:data)
+            record.priority = args[:priority] if args.include?(:priority)
+            record.port = args[:port] if args.include?(:port)
+            record.weight = args[:weight] if args.include?(:weight)
+
+            #raise "ahora vai #{record.inspect}"
 
             check_response(
                 @client.domain_records.update(
-                                          record: record,
+                                          record,
                                           for_domain: args[:domain],
                                           id: record.id
 
