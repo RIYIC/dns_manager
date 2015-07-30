@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+require 'pathname'
+require 'optparse'
+require 'pp'
+
+APP_PATH = File.expand_path('../../config/application',  __FILE__)
+require File.expand_path('../../config/boot',  __FILE__)
+require APP_PATH
+# set Rails.env here if desired
+Rails.application.require_environment!
+
+# -u <usuario> -> lista los dominios y zonas de un usuario
+# -d <dominio> -> lista las zonas de un dominio
+# -t -> Chequea contra el proveedor las zonas almacenadas en bbdd
+
+options = {}
+OptionParser.new do |opts|
+    opts.banner = 'Usage: list_zones [options]'
+
+    opts.on('-d', '--domain [domain name]',
+            'Domain to list zones') do |d|
+        options[:domain] = d
+    end
+
+    opts.on('-u', '--user [user name]',
+            'Username to list domains and zones') do |n|
+        options[:user] = n
+    end
+
+    opts.on('-c', '--check',
+            'Check zones with provider') do 
+        options[:check] = true
+    end
+
+end.parse!
+
+unless options.include?(:domain) || options.include?(:user)
+    puts "Lacks needed param (user|domain)"
+    exit
+end
+
+
+def print_domain_zones(domain)
+        puts ''
+        puts "User: #{domain.user.name}, Domain: #{domain.name}, Provider: #{domain.provider.name}"
+        puts "================================================"
+        domain.records.each {|z| puts "#{domain.name} -> name:#{z.name}, type:#{z.zone_type}, destination:#{z.data}" }
+        puts "================================================"
+end
+
+
+if options.include?(:user)
+    User.find_by_name(options[:user]).domains.each do |domain|
+        print_domain_zones(domain)
+
+
+    end
+else
+    print_domain_zones(
+        Domain.find_by_name(options[:domain])
+    )
+
+end
+
