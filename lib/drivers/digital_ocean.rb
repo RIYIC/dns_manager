@@ -225,6 +225,19 @@ module Driver
             )
         end
 
+        def get_records(args)
+            required_args(
+                args, :domain
+            )
+
+            check_response(
+                @client.domain_records.all(
+
+                    for_domain: args[:domain]
+                )
+            )
+        end
+
 
         private
 

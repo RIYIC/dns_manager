@@ -11,9 +11,10 @@ Rails.application.require_environment!
 
 # -u <usuario> -> lista los dominios y zonas de un usuario
 # -d <dominio> -> lista las zonas de un dominio
-# -t -> Chequea contra el proveedor las zonas almacenadas en bbdd
+# -c -> Chequea contra el proveedor las zonas almacenadas en bbdd
 
 options = {}
+
 OptionParser.new do |opts|
     opts.banner = 'Usage: list_zones [options]'
 
@@ -34,6 +35,8 @@ OptionParser.new do |opts|
 
 end.parse!
 
+@options = options
+
 unless options.include?(:domain) || options.include?(:user)
     puts "Lacks needed param (user|domain)"
     exit
@@ -46,18 +49,26 @@ def print_domain_zones(domain)
         puts "================================================"
         domain.records.each {|z| puts "#{domain.name} -> name:#{z.name}, type:#{z.zone_type}, destination:#{z.data}" }
         puts "================================================"
+
+        if @options[:check]
+
+            zones = ListZones.perform_now(@options)
+            
+            puts zones
+
+        end
 end
 
 
 if options.include?(:user)
-    User.find_by_name(options[:user]).domains.each do |domain|
-        print_domain_zones(domain)
+    User.find_by_name!(options[:user]).domains.each do |domain|
 
+        print_domain_zones(domain)
 
     end
 else
     print_domain_zones(
-        Domain.find_by_name(options[:domain])
+        Domain.find_by_name!(options[:domain])
     )
 
 end
