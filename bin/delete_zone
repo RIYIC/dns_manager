@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+require 'pathname'
+require 'optparse'
+
+APP_PATH = File.expand_path('../../config/application',  __FILE__)
+require File.expand_path('../../config/boot',  __FILE__)
+require APP_PATH
+# set Rails.env here if desired
+Rails.application.require_environment!
+
+options = {}
+OptionParser.new do |opts|
+    opts.banner = 'Usage: $0 [options]'
+
+    opts.on('-d', '--domain [domain name]',
+            'Domain where to delete zone') do |d|
+        options[:domain] = d
+    end
+
+    opts.on('-n', '--name [zone record name]',
+            'Zone record name') do |n|
+        options[:name] = n
+    end
+
+    opts.on('-t', '--type [zone record type]',
+            'Zone record type') do |t|
+        options[:zone_type] = t
+    end
+
+    opts.on('-D', '--data [zone data]',
+            'Zone destination') do |t|
+        options[:data] = t
+    end
+
+    opts.on('-I', '--priority [new priority]',
+            'New zone MX priority') do |t|
+        options[:priority] = t
+    end
+
+    opts.on('-W', '--weight [new weight]',
+            'New zone SRV weight') do |t|
+        options[:weight] = t
+    end
+
+    opts.on('-P', '--port [new port]',
+            'New zone SRV port') do |t|
+        options[:port] = t
+    end
+
+end.parse!
+
+%W{
+    domain
+}.each do |necesario|
+
+    raise "Falta paremetro necesario #{necesario}" unless options.include?(necesario.to_sym)
+end
+
+
+RemoveZoneRecord.perform_now(options)
+
+

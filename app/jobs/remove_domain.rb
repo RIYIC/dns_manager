@@ -4,7 +4,7 @@ class RemoveDomain < ActiveJob::Base
 
     def perform(*args)
 
-        driver = Driver.new(provider: Rails.configuration.x.provider)
+        driver = Driver.get(provider: Rails.configuration.x.provider)
 
         driver.remove_domain(args)
 
