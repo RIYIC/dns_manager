@@ -5,7 +5,7 @@ class ProviderJobBase < ActiveJob::Base
     queue_as :normal
 
 
-    def driver(args={})
+    def get_driver(args={})
 
         provider = args[:provider] || Rails.configuration.x.default_provider
 
@@ -13,7 +13,7 @@ class ProviderJobBase < ActiveJob::Base
 
     end
 
-    def provider(args={})
+    def get_provider(args={})
         provider = args[:provider] || Rails.configuration.x.default_provider
 
         Provider.find_by_slug!(provider)

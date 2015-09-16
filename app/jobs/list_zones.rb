@@ -4,15 +4,15 @@ class ListZones < ProviderJobBase
 
     def perform(args={})
 
-        raise "Error" unless args.include?(:domain)
+        raise "Falta parametro necesario :domain" unless args.include?(:domain)
 
-        domain = provider(args).domains.find_by_name!(
+        domain = get_provider(args).domains.find_by_name!(
             args[:domain]
         )
 
         provider_records = []
 
-        driver(args).get_records(args).each do |r|
+        get_driver(args).get_records(args).each do |r|
 
             provider_records.push(
                 r.to_hash
